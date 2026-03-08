@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Management</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="container">
+    <a href="home.html" class="back-button">← Back to Home</a>
+
+    <h1>Team Management</h1>
+
+    <form id="teamForm">
+      <div class="form-group">
+        <label for="teamName">Team Name</label>
+        <input type="text" id="teamName" required>
+      </div>
+
+      <div class="form-group">
+        <label for="coachName">Coach Name</label>
+        <input type="text" id="coachName" required>
+      </div>
+
+      <div class="form-group">
+        <label for="playersCount">Number of Players</label>
+        <input type="number" id="playersCount" required>
+      </div>
+
+      <button type="submit">Add Team</button>
+    </form>
+
+    <h2>Team Details</h2>
+    <button onclick="clearTeams()">Clear All Teams</button>
+    <div id="teamResult"></div>
+  </div>
+
+  <script>
+   document.getElementById("teamForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  let teamName = document.getElementById("teamName").value;
+  let coachName = document.getElementById("coachName").value;
+  let playersCount = document.getElementById("playersCount").value;
+
+  let teams = JSON.parse(localStorage.getItem("teams")) || [];
+
+  teams.push({
+    name: teamName,
+    coach: coachName,
+    players: playersCount
+  });
+
+  localStorage.setItem("teams", JSON.stringify(teams));
+
+  displayTeams();
+
+  document.getElementById("teamForm").reset();
+});
+
+function displayTeams() {
+  let teams = JSON.parse(localStorage.getItem("teams")) || [];
+
+  let output = `
+  <table border="1" style="width:100%; border-collapse: collapse;">
+    <tr>
+      <th>Team Name</th>
+      <th>Coach</th>
+      <th>Players</th>
+      <th>Action</th>
+    </tr>
+  `;
+
+  teams.forEach(function(team, index) {
+    output += `
+      <tr>
+        <td>${team.name}</td>
+        <td>${team.coach}</td>
+        <td>${team.players}</td>
+        <td>
+          <button onclick="deleteTeam(${index})">Delete</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  output += `</table>`;
+
+  document.getElementById("teamResult").innerHTML = output;
+}
+function deleteTeam(index) {
+  let teams = JSON.parse(localStorage.getItem("teams")) || [];
+
+  teams.splice(index, 1);
+
+  localStorage.setItem("teams", JSON.stringify(teams));
+
+  displayTeams();
+}
+  function clearTeams() {
+  localStorage.removeItem("teams");
+  displayTeams();
+
+}
+displayTeams();
+  </script>
+  
+
+<header class="header">
+<div class="logo">Fitforge Pro</div>
+
+<nav class="nav">
+<ul class="nav-links">
+<li><a href="home.html">Home</a></li>
+<li><a href="index.html">Fitness Planner</a></li>
+<li><a href="team_management.html">Teams</a></li>
+<li><a href="match_scheduler.html">Matches</a></li>
+<li><a href="player_performance.html">Players</a></li>
+</ul>
+</nav>
+</header>
+
+</body>
+<header class="header">
+  <div class="logo">Fitforge Pro</div>
+  <nav class="nav">
+    <ul class="nav-links">
+      <li><a href="home.html">Home</a></li>
+      <li><a href="index.html">Fitness Planner</a></li>
+      <li><a href="team_management.html">Teams</a></li>
+      <li><a href="match_scheduler.html">Matches</a></li>
+      <li><a href="player_performance.html">Players</a></li>
+    </ul>
+  </nav>
+</header>
+</html>

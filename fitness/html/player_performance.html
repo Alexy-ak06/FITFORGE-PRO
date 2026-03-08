@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Player Performance Tracker</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<a href="home.html" class="back-button">← Back to Home</a>
+
+<h1>Player Performance Tracker</h1>
+
+<form id="playerForm">
+
+<div class="form-group">
+<label for="playerName">Player Name</label>
+<input type="text" id="playerName" required>
+</div>
+
+<div class="form-group">
+<label for="matchesPlayed">Matches Played</label>
+<input type="number" id="matchesPlayed" required>
+</div>
+
+<div class="form-group">
+<label for="score">Score / Goals</label>
+<input type="number" id="score" required>
+</div>
+
+<div class="form-group">
+<label for="fitness">Fitness Status</label>
+<input type="text" id="fitness" required>
+</div>
+
+<button type="submit">Track Performance</button>
+
+</form>
+
+<h2>Player Stats</h2>
+<button onclick="clearPlayers()">Clear All Players</button>
+<div id="playerResult"></div>
+
+</div>
+
+<script>
+
+document.getElementById("playerForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  let name = document.getElementById("playerName").value;
+  let matches = document.getElementById("matchesPlayed").value;
+  let score = document.getElementById("score").value;
+  let fitness = document.getElementById("fitness").value;
+
+  let players = JSON.parse(localStorage.getItem("players")) || [];
+
+  players.push({
+    name: name,
+    matches: matches,
+    score: score,
+    fitness: fitness
+  });
+
+  localStorage.setItem("players", JSON.stringify(players));
+
+  displayPlayers();
+
+  document.getElementById("playerForm").reset();
+});
+function displayPlayers() {
+  let players = JSON.parse(localStorage.getItem("players")) || [];
+
+  let output = `
+  <table border="1" style="width:100%; border-collapse: collapse;">
+    <tr>
+      <th>Player</th>
+      <th>Matches Played</th>
+      <th>Score / Goals</th>
+      <th>Fitness Status</th>
+      <th>Action</th>
+    </tr>
+  `;
+
+  players.forEach(function(player, index) {
+    output += `
+      <tr>
+        <td>${player.name}</td>
+        <td>${player.matches}</td>
+        <td>${player.score}</td>
+        <td>${player.fitness}</td>
+        <td>
+          <button onclick="deletePlayer(${index})">Delete</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  output += `</table>`;
+
+  document.getElementById("playerResult").innerHTML = output;
+}
+function deletePlayer(index) {
+  let players = JSON.parse(localStorage.getItem("players")) || [];
+
+  players.splice(index, 1);
+
+  localStorage.setItem("players", JSON.stringify(players));
+
+  displayPlayers();
+}
+function clearPlayers() {
+  localStorage.removeItem("players");
+  displayPlayers();
+}
+
+displayPlayers();
+
+</script>
+
+</body>
+</html>

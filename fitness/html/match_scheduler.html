@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Match Scheduler</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="container">
+    <a href="home.html" class="back-button">← Back to Home</a>
+
+    <h1>Match Scheduler</h1>
+
+    <form id="matchForm">
+      <div class="form-group">
+        <label for="matchName">Match Name</label>
+        <input type="text" id="matchName" required>
+      </div>
+
+      <div class="form-group">
+        <label for="matchDate">Match Date</label>
+        <input type="date" id="matchDate" required>
+      </div>
+
+      <div class="form-group">
+        <label for="venue">Venue</label>
+        <input type="text" id="venue" required>
+      </div>
+
+      <button type="submit">Schedule Match</button>
+    </form>
+
+    <h2>Scheduled Match</h2>
+    <button onclick="clearMatches()">Clear All Matches</button>
+    <div id="matchResult"></div>
+  </div>
+
+  <script>
+    document.getElementById("matchForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  let matchName = document.getElementById("matchName").value;
+  let matchDate = document.getElementById("matchDate").value;
+  let venue = document.getElementById("venue").value;
+
+  let matches = JSON.parse(localStorage.getItem("matches")) || [];
+
+  matches.push({
+    name: matchName,
+    date: matchDate,
+    venue: venue
+  });
+
+  localStorage.setItem("matches", JSON.stringify(matches));
+
+  displayMatches();
+
+  document.getElementById("matchForm").reset();
+});
+
+function displayMatches() {
+  let matches = JSON.parse(localStorage.getItem("matches")) || [];
+
+  let output = `
+  <table border="1" style="width:100%; border-collapse: collapse;">
+    <tr>
+      <th>Match</th>
+      <th>Date</th>
+      <th>Venue</th>
+      <th>Action</th>
+    </tr>
+  `;
+
+  matches.forEach(function(match, index) {
+    output += `
+      <tr>
+        <td>${match.name}</td>
+        <td>${match.date}</td>
+        <td>${match.venue}</td>
+        <td>
+          <button onclick="deleteMatch(${index})">Delete</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  output += `</table>`;
+
+  document.getElementById("matchResult").innerHTML = output;
+}
+function deleteMatch(index) {
+  let matches = JSON.parse(localStorage.getItem("matches")) || [];
+
+  matches.splice(index, 1);
+
+  localStorage.setItem("matches", JSON.stringify(matches));
+
+  displayMatches();
+}
+function clearMatches() {
+  localStorage.removeItem("matches");
+  displayMatches();
+}
+displayMatches();
+  </script>
+</body>
+</html>
